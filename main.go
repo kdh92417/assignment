@@ -9,11 +9,13 @@ import (
 
 func getStage1(c * gin.Context) {
 	value, err := ioutil.ReadAll(c.Request.Body)
-	fmt.Println(value, err)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	i := 0
 	for i < len(value) {
-        value[i] += 1 
+        value[i] += 1
         i += 1
 	}
 
@@ -41,12 +43,17 @@ func getStage1Result(c * gin.Context) {
 	fmt.Println(value, string(value), err)
 }
 
-func main() {
+func setupRouter() *gin.Engine{
 	router := gin.Default()
 	router.POST("/stage1", getStage1)
 	router.POST("/stage2", getStage2)
 	router.POST("/stage3", getStage2)
 	router.POST("/stage/result", getStage1Result)
-	router.Run("0.0.0.0:8090")
+
+	return router
 }
 
+func main() {
+	router := setupRouter()
+	router.Run("0.0.0.0:8090")
+}
